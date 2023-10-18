@@ -15,4 +15,4 @@ resources:
   # ATENTION name = image.name NOT name = spec.containers[0].name
 images:
 - name: ghcr.io/xgeekshq/test-ai-standard
-  newTag: f13b2a7
+  newTag: 27b4812
