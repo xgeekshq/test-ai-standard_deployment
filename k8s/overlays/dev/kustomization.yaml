@@ -9,13 +9,10 @@ namespace: idp-dev
 # namespace: test-ai-standard-idp_training-dev
 
 resources:
-  - ../../base
-  - ingress.yaml
+- ../../base
+- ingress.yaml
 
-images:
   # ATENTION name = image.name NOT name = spec.containers[0].name
-  - name: ghcr.io/xgeekshq/test-ai-standard
-    newTag: v1
-# replicas:
-#   - name: test-ai-standard # the deployment name
-#     count: 1
+images:
+- name: ghcr.io/xgeekshq/test-ai-standard
+  newTag: 8678d05
