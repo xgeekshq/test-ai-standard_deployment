@@ -1,0 +1,117 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: test-ai-standard
+  # annotations:
+  #   argocd.argoproj.io/sync-wave: "5"
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: test-ai-standard
+  template:
+    metadata:
+      labels:
+        app: test-ai-standard
+    spec:
+      imagePullSecrets:
+        - name: regcred-ghcr-io-secret
+      initContainers:
+        - name: test-ai-standard-init
+          image: ghcr.io/xgeekshq/test-ai-standard
+          command:
+            - sh
+            - -c
+            - npm run generate-embeddings-pinecone
+          env:
+            - name: OPENAI_API_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: test-ai-standard-secrets
+                  key: OPENAI_API_KEY
+            - name: PINECONE_API_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: test-ai-standard-secrets
+                  key: PINECONE_API_KEY
+            - name: PINECONE_INDEX
+              valueFrom:
+                secretKeyRef:
+                  name: test-ai-standard-secrets
+                  key: PINECONE_INDEX
+            - name: PINECONE_ENVIRONMENT
+              valueFrom:
+                secretKeyRef:
+                  name: test-ai-standard-secrets
+                  key: PINECONE_ENVIRONMENT
+      containers:
+        - name: test-ai-standard
+          image: ghcr.io/xgeekshq/test-ai-standard
+          ports:
+            - containerPort: 80
+          resources:
+            requests:
+              cpu: 125m
+              memory: 250Mi
+            limits:
+              cpu: 250m
+              memory: 500Mi
+          env:
+            - name: NODE_ENV
+              value: production
+            - name: NEXT_PUBLIC_CLERK_SIGN_IN_URL
+              valueFrom:
+                configMapKeyRef:
+                  name: test-ai-standard-cm
+                  key: NEXT_PUBLIC_CLERK_SIGN_IN_URL
+            - name: NEXT_PUBLIC_CLERK_SIGN_UP_URL
+              valueFrom:
+                configMapKeyRef:
+                  name: test-ai-standard-cm
+                  key: NEXT_PUBLIC_CLERK_SIGN_UP_URL
+            - name: NEXT_PUBLIC_CLERK_AFTER_SIGN_IN_URL
+              valueFrom:
+                configMapKeyRef:
+                  name: test-ai-standard-cm
+                  key: NEXT_PUBLIC_CLERK_AFTER_SIGN_IN_URL
+            - name: NEXT_PUBLIC_CLERK_AFTER_SIGN_UP_URL
+              valueFrom:
+                configMapKeyRef:
+                  name: test-ai-standard-cm
+                  key: NEXT_PUBLIC_CLERK_AFTER_SIGN_UP_URL
+            - name: NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: test-ai-standard-secrets
+                  key: NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY
+            - name: CLERK_SECRET_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: test-ai-standard-secrets
+                  key: CLERK_SECRET_KEY
+            - name: OPENAI_API_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: test-ai-standard-secrets
+                  key: OPENAI_API_KEY
+            - name: REPLICATE_API_TOKEN
+              valueFrom:
+                secretKeyRef:
+                  name: test-ai-standard-secrets
+                  key: REPLICATE_API_TOKEN
+            - name: PINECONE_API_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: test-ai-standard-secrets
+                  key: PINECONE_API_KEY
+            - name: PINECONE_INDEX
+              valueFrom:
+                secretKeyRef:
+                  name: test-ai-standard-secrets
+                  key: PINECONE_INDEX
+            - name: PINECONE_ENVIRONMENT
+              valueFrom:
+                secretKeyRef:
+                  name: test-ai-standard-secrets
+                  key: PINECONE_ENVIRONMENT
